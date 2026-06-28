@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Inscrits — {{ evenement.titre }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'dashboard_organisateur' %}" class="text-decoration-none">&larr; Retour à mon espace</a>
+
+<div class="d-flex justify-content-between align-items-center mt-3 mb-4 flex-wrap gap-2">
+    <h1 class="mb-0">Inscrits — {{ evenement.titre }}</h1>
+    <a href="{% url 'telecharger_excel_inscrits' evenement.pk %}" class="btn btn-success">
+        📥 Télécharger le fichier Excel
+    </a>
+</div>
+
+<h5 class="mt-4">Confirmés ({{ inscrits_confirmes|length }})</h5>
+{% if inscrits_confirmes %}
+    <div class="table-responsive mb-4">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénoms</th>
+                    <th>Téléphone</th>
+                    <th>Ville</th>
+                    <th>Email</th>
+                    <th>Confirmé le</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscrit in inscrits_confirmes %}
+                <tr>
+                    <td>{{ inscrit.nom }}</td>
+                    <td>{{ inscrit.prenoms }}</td>
+                    <td>{{ inscrit.telephone1 }}</td>
+                    <td>{{ inscrit.ville }}</td>
+                    <td>{{ inscrit.email }}</td>
+                    <td>{{ inscrit.date_confirmation|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p class="text-muted">Aucune inscription confirmée pour le moment.</p>
+{% endif %}
+
+<h5 class="mt-4">En attente de confirmation ({{ inscrits_en_attente|length }})</h5>
+{% if inscrits_en_attente %}
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénoms</th>
+                    <th>Email</th>
+                    <th>Demandé le</th>
+                    <th>Expire le</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscrit in inscrits_en_attente %}
+                <tr>
+                    <td>{{ inscrit.nom }}</td>
+                    <td>{{ inscrit.prenoms }}</td>
+                    <td>{{ inscrit.email }}</td>
+                    <td>{{ inscrit.date_inscription|date:"d/m/Y H:i" }}</td>
+                    <td>{{ inscrit.date_expiration|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted small">
+        Ces personnes n'ont pas encore cliqué sur le lien reçu par email. Elles
+        n'apparaissent pas dans le fichier Excel et ne décomptent pas de place
+        tant qu'elles n'ont pas confirmé.
+    </p>
+{% else %}
+    <p class="text-muted">Aucune demande en attente.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Vérifiez votre email{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card p-5">
+            <div class="mb-3" style="font-size: 3rem;">📧</div>
+            <h2>Vérifiez votre boîte mail</h2>
+            <p class="text-muted mb-4">
+                Nous venons d'envoyer un email à l'adresse indiquée, avec un lien
+                pour confirmer définitivement votre inscription à
+                <strong>{{ evenement.titre }}</strong>.
+            </p>
+            <p class="text-muted small">
+                Le lien est valable <strong>48 heures</strong>. Pensez à vérifier vos spams
+                si vous ne le voyez pas arriver.
+            </p>
+            <a href="{% url 'liste_evenements' %}" class="btn btn-primary mt-3">
+                Retour aux événements
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

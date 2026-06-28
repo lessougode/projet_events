@@ -1,0 +1,23 @@
+.card-evenement {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    transition: box-shadow 0.2s ease;
+}
+
+.card-evenement:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.badge-places {
+    font-size: 0.85rem;
+}
+
+.btn-primary {
+    background-color: #2E5C8A;
+    border-color: #2E5C8A;
+}
+
+.btn-primary:hover {
+    background-color: #244a70;
+    border-color: #244a70;
+}

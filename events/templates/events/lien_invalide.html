@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Lien expiré{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card p-5">
+            <div class="mb-3" style="font-size: 3rem;">⏳</div>
+            <h2>Ce lien n'est plus valable</h2>
+
+            {% if inscription.statut == "EXPIREE" %}
+                <p class="text-muted mb-4">
+                    Le délai de 48 heures pour confirmer votre inscription à
+                    <strong>{{ evenement.titre }}</strong> est dépassé.
+                    Votre demande a été annulée.
+                </p>
+            {% else %}
+                <p class="text-muted mb-4">
+                    Cette inscription n'a pas pu être confirmée — il se peut que
+                    l'événement <strong>{{ evenement.titre }}</strong> soit complet
+                    entre-temps.
+                </p>
+            {% endif %}
+
+            {% if not evenement.est_complet %}
+                <a href="{% url 'inscription_evenement' evenement.pk %}" class="btn btn-primary">
+                    Recommencer mon inscription
+                </a>
+            {% else %}
+                <a href="{% url 'liste_evenements' %}" class="btn btn-primary">
+                    Voir d'autres événements
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

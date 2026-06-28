@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Compte en attente d'activation{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card p-5">
+            <div class="mb-3" style="font-size: 3rem;">⏳</div>
+            <h2>Votre compte a bien été créé</h2>
+            <p class="text-muted mb-4">
+                Il doit maintenant être activé avant que vous puissiez vous
+                connecter et créer vos événements.
+            </p>
+            <div class="alert alert-info text-start">
+                Pour activer votre compte, veuillez nous régler les frais
+                d'accès directement (en personne, ou selon les modalités
+                convenues), puis nous vous confirmerons l'activation.
+            </div>
+            <p class="text-muted small mb-0">
+                Une fois votre compte activé, vous pourrez vous connecter
+                normalement avec l'identifiant et le mot de passe que vous
+                venez de choisir.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

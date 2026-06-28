@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ evenement.titre }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'liste_evenements' %}" class="text-decoration-none">&larr; Retour à la liste</a>
+
+<div class="card mt-3 p-4">
+    <h1>{{ evenement.titre }}</h1>
+
+    <p class="text-muted mb-1">
+        {% if evenement.sur_un_seul_jour %}
+            📅 {{ evenement.date_debut|date:"l d F Y à H:i" }} — {{ evenement.date_fin|date:"H:i" }}
+        {% else %}
+            📅 Du {{ evenement.date_debut|date:"l d F Y à H:i" }} au {{ evenement.date_fin|date:"l d F Y à H:i" }}
+            <br><span class="small">({{ evenement.duree_en_jours }} jours)</span>
+        {% endif %}
+    </p>
+    <p class="text-muted mb-3">📍 {{ evenement.lieu }}</p>
+
+    {% if evenement.description %}
+        <p>{{ evenement.description|linebreaks }}</p>
+    {% endif %}
+
+    <div class="mb-4">
+        {% if evenement.est_complet %}
+            <span class="badge bg-danger badge-places">Complet — plus de places disponibles</span>
+        {% else %}
+            <span class="badge bg-success badge-places">
+                {{ evenement.places_restantes }} place{{ evenement.places_restantes|pluralize }} restante{{ evenement.places_restantes|pluralize }}
+                sur {{ evenement.places_totales }}
+            </span>
+        {% endif %}
+    </div>
+
+    {% if evenement.est_complet %}
+        <button class="btn btn-secondary" disabled>Inscriptions closes</button>
+    {% else %}
+        <a href="{% url 'inscription_evenement' evenement.pk %}" class="btn btn-primary">
+            S'inscrire à cet événement
+        </a>
+    {% endif %}
+</div>
+{% endblock %}

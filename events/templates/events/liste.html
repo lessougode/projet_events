@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Événements à venir{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Événements à venir</h1>
+
+{% if evenements %}
+    <div class="row g-4">
+        {% for evenement in evenements %}
+        <div class="col-md-6">
+            <div class="card card-evenement h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ evenement.titre }}</h5>
+                    <p class="card-text text-muted mb-1">
+                        {% if evenement.sur_un_seul_jour %}
+                            📅 {{ evenement.date_debut|date:"d/m/Y à H:i" }}
+                        {% else %}
+                            📅 Du {{ evenement.date_debut|date:"d/m/Y" }} au {{ evenement.date_fin|date:"d/m/Y" }}
+                        {% endif %}
+                    </p>
+                    <p class="card-text text-muted mb-3">
+                        📍 {{ evenement.lieu }}
+                    </p>
+
+                    {% if evenement.est_complet %}
+                        <span class="badge bg-danger badge-places">Complet</span>
+                    {% else %}
+                        <span class="badge bg-success badge-places">
+                            {{ evenement.places_restantes }} place{{ evenement.places_restantes|pluralize }} restante{{ evenement.places_restantes|pluralize }}
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white border-0 pb-3">
+                    <a href="{% url 'detail_evenement' evenement.pk %}" class="btn btn-primary btn-sm">
+                        Voir le détail
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">Aucun événement à venir pour le moment. Revenez bientôt !</p>
+{% endif %}
+{% endblock %}

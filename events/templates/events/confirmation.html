@@ -1,0 +1,26 @@
+
+
+{% extends "base.html" %}
+{% block title %}Inscription confirmée{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card p-5">
+            <div class="mb-3" style="font-size: 3rem;">✅</div>
+            <h2>Inscription confirmée !</h2>
+            <p class="text-muted mb-4">
+                Vous êtes bien inscrit(e) à l'événement
+                <strong>{{ evenement.titre }}</strong>.<br>
+                Votre place est réservée.
+            </p>
+            <a href="{% url 'liste_evenements' %}" class="btn btn-primary">
+                Voir d'autres événements
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+

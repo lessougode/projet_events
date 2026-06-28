@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Mon espace organisateur{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Mes événements</h1>
+    <a href="{% url 'creer_evenement' %}" class="btn btn-primary">+ Créer un événement</a>
+</div>
+
+{% if evenements %}
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Dates</th>
+                    <th>Lieu</th>
+                    <th>Inscrits confirmés</th>
+                    <th>Places restantes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evenement in evenements %}
+                <tr>
+                    <td>
+                        <a href="{% url 'detail_evenement' evenement.pk %}">{{ evenement.titre }}</a>
+                    </td>
+                    <td>
+                        {% if evenement.sur_un_seul_jour %}
+                            {{ evenement.date_debut|date:"d/m/Y" }}
+                        {% else %}
+                            {{ evenement.date_debut|date:"d/m/Y" }} → {{ evenement.date_fin|date:"d/m/Y" }}
+                        {% endif %}
+                    </td>
+                    <td>{{ evenement.lieu }}</td>
+                    <td>{{ evenement.nombre_inscrits }} / {{ evenement.places_totales }}</td>
+                    <td>
+                        {% if evenement.est_complet %}
+                            <span class="badge bg-danger">Complet</span>
+                        {% else %}
+                            <span class="badge bg-success">{{ evenement.places_restantes }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <a href="{% url 'liste_inscrits' evenement.pk %}" class="btn btn-sm btn-outline-primary">Inscrits</a>
+                            <a href="{% url 'modifier_evenement' evenement.pk %}" class="btn btn-sm btn-outline-secondary">Modifier</a>
+                            <a href="{% url 'supprimer_evenement' evenement.pk %}" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="card p-5 text-center">
+        <p class="text-muted mb-3">Vous n'avez encore créé aucun événement.</p>
+        <a href="{% url 'creer_evenement' %}" class="btn btn-primary">Créer mon premier événement</a>
+    </div>
+{% endif %}
+{% endblock %}

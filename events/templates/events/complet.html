@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Événement complet{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card p-5">
+            <div class="mb-3" style="font-size: 3rem;">😔</div>
+            <h2>Désolé, cet événement est complet</h2>
+            <p class="text-muted mb-4">
+                Toutes les places pour <strong>{{ evenement.titre }}</strong> ont été réservées.
+            </p>
+            <a href="{% url 'liste_evenements' %}" class="btn btn-primary">
+                Voir d'autres événements
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

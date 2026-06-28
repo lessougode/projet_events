@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Inscription — {{ evenement.titre }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <a href="{% url 'detail_evenement' evenement.pk %}" class="text-decoration-none">&larr; Retour à l'événement</a>
+
+        <div class="card mt-3 p-4">
+            <h2 class="mb-1">Inscription</h2>
+            <p class="text-muted mb-4">
+                {{ evenement.titre }}<br>
+                {% if evenement.sur_un_seul_jour %}
+                    {{ evenement.date_debut|date:"d/m/Y à H:i" }}
+                {% else %}
+                    Du {{ evenement.date_debut|date:"d/m/Y" }} au {{ evenement.date_fin|date:"d/m/Y" }}
+                {% endif %}
+                — {{ evenement.lieu }}<br>
+                <strong>{{ evenement.places_restantes }} place{{ evenement.places_restantes|pluralize }} restante{{ evenement.places_restantes|pluralize }}</strong>
+            </p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary w-100 mt-2">
+                    Recevoir mon email de confirmation
+                </button>
+            </form>
+            <p class="text-muted small mt-3 mb-0">
+                Un email vous sera envoyé avec un lien à cliquer pour valider définitivement votre inscription.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

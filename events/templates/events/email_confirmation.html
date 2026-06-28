@@ -1,0 +1,58 @@
+
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; color: #333;">
+
+    <div style="background-color: #2E5C8A; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 22px;">Confirmation d'inscription</h1>
+    </div>
+
+    <div style="background-color: #f9f9f9; padding: 30px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px;">
+
+        <p>Bonjour <strong>{{ prenoms }} {{ nom }}</strong>,</p>
+
+        <p>
+            Vous venez de demander votre inscription à l'événement
+            <strong>« {{ evenement }} »</strong>.
+        </p>
+
+        <p>
+            Pour confirmer définitivement votre place, cliquez sur le bouton
+            ci-dessous dans les <strong>{{ delai }}</strong> :
+        </p>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ lien_confirmation }}"
+               style="background-color: #2E5C8A; color: white; padding: 14px 28px;
+                      text-decoration: none; border-radius: 6px; font-size: 16px;
+                      display: inline-block;">
+                ✅ Confirmer mon inscription
+            </a>
+        </div>
+
+        <p style="color: #666; font-size: 13px;">
+            Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :
+        </p>
+        <p style="word-break: break-all; font-size: 12px; color: #2E5C8A;">
+            {{ lien_confirmation }}
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+
+        <p style="color: #999; font-size: 12px;">
+            ⚠️ Passé un délai de {{ delai }}, votre demande sera automatiquement
+            annulée et la place ne sera pas réservée.
+        </p>
+
+        <p>À bientôt !</p>
+    </div>
+
+</body>
+</html>
+

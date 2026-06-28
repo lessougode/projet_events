@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Supprimer l'événement{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h2 class="mb-3">Supprimer cet événement ?</h2>
+            <p>
+                Vous êtes sur le point de supprimer définitivement
+                <strong>{{ evenement.titre }}</strong>.
+            </p>
+            {% if evenement.nombre_inscrits > 0 %}
+                <div class="alert alert-warning">
+                    Attention : {{ evenement.nombre_inscrits }} inscription{{ evenement.nombre_inscrits|pluralize }}
+                    confirmée{{ evenement.nombre_inscrits|pluralize }} {{ evenement.nombre_inscrits|pluralize:"sera,seront" }}
+                    également supprimée{{ evenement.nombre_inscrits|pluralize }}. Cette action est irréversible.
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex gap-2">
+                    <a href="{% url 'dashboard_organisateur' %}" class="btn btn-secondary flex-fill">Annuler</a>
+                    <button type="submit" class="btn btn-danger flex-fill">Confirmer la suppression</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
