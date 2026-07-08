@@ -131,27 +131,33 @@ TEMPLATES = [
 # Base de données
 # SQLite en développement, PostgreSQL en production
 # ---------------------------------------------------------------------------
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME":     config("DB_NAME",     default="events_db"),
-            "USER":     config("DB_USER",     default="events_user"),
-            "PASSWORD": config("DB_PASSWORD", default=""),
-            "HOST":     config("DB_HOST",     default="localhost"),
-            "PORT":     config("DB_PORT",     default="5432"),
-            "CONN_MAX_AGE": 600,
-        }
-    }
+#  POUR LES PLANS PAYANTS PYTHONANYWHERE, IL FAUT UTILISER POSTGRESQL.
+# if DEBUG:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": BASE_DIR / "db.sqlite3",
+#         }
+#     }
+# else:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME":     config("DB_NAME",     default="events_db"),
+#             "USER":     config("DB_USER",     default="events_user"),
+#             "PASSWORD": config("DB_PASSWORD", default=""),
+#             "HOST":     config("DB_HOST",     default="localhost"),
+#             "PORT":     config("DB_PORT",     default="5432"),
+#             "CONN_MAX_AGE": 600,
+#         }
+#     }
 
-
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 # ---------------------------------------------------------------------------
 # Validation des mots de passe
 # ---------------------------------------------------------------------------
