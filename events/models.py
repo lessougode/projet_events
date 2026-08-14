@@ -1,7 +1,3 @@
-
-
-
-
 import secrets
 from datetime import timedelta
 
@@ -256,12 +252,13 @@ class MoyenPaiement(models.Model):
         ORANGE_MONEY = "ORANGE_MONEY", "Orange Money"
         MTN_MOMO = "MTN_MOMO", "MTN Mobile Money"
         MOOV_MONEY = "MOOV_MONEY", "Moov Money"
+        WAVE = "WAVE", "Wave"
         CINETPAY = "CINETPAY", "CinetPay (carte bancaire / mobile money agrégé)"
 
     # Les moyens "mobile money direct" nécessitent une preuve de paiement
     # (capture d'écran) et une validation manuelle. CinetPay est entièrement
     # automatisé via API.
-    MOYENS_MOBILE_MONEY_DIRECT = [Code.ORANGE_MONEY, Code.MTN_MOMO, Code.MOOV_MONEY]
+    MOYENS_MOBILE_MONEY_DIRECT = [Code.ORANGE_MONEY, Code.MTN_MOMO, Code.MOOV_MONEY, Code.WAVE]
 
     code = models.CharField(max_length=20, choices=Code.choices, unique=True)
     actif = models.BooleanField(
@@ -475,6 +472,29 @@ class Paiement(models.Model):
     def en_attente_de_validation_manuelle(self):
         return self.moyen_paiement.est_mobile_money_direct and self.statut == self.Statut.EN_ATTENTE_VALIDATION
 
+    def save(self, *args, **kwargs):
+        """Filet de sécurité : si le statut passe à VALIDE — que ce soit via
+        `.valider()` ou via une modification manuelle du champ dans
+        l'admin — l'inscription/l'abonnement lié est confirmé automatiquement.
+        Sans ça, un changement de statut fait à la main dans le formulaire
+        d'admin (au lieu de l'action groupée "Valider les paiements
+        sélectionnés") laisse le compte organisateur inactif malgré un
+        statut affiché "Payé et validé"."""
+        devient_valide = False
+        if self.pk:
+            ancien_statut = Paiement.objects.filter(pk=self.pk).values_list("statut", flat=True).first()
+            devient_valide = ancien_statut != self.Statut.VALIDE and self.statut == self.Statut.VALIDE
+        if devient_valide and not self.date_validation:
+            self.date_validation = timezone.now()
+
+        super().save(*args, **kwargs)
+
+        if devient_valide:
+            if self.inscription_id:
+                self.inscription.valider_paiement()
+            elif self.abonnement_id and not self.abonnement.date_debut:
+                self.abonnement.activer()
+
     def valider(self, valide_par=None):
         """Marque le paiement comme validé, confirme l'objet lié
         (inscription ou abonnement) et renvoie True si tout s'est bien passé."""
@@ -482,13 +502,7 @@ class Paiement(models.Model):
             return True
         self.statut = self.Statut.VALIDE
         self.valide_par = valide_par
-        self.date_validation = timezone.now()
-        self.save(update_fields=["statut", "valide_par", "date_validation"])
-
-        if self.inscription_id:
-            self.inscription.valider_paiement()
-        elif self.abonnement_id:
-            self.abonnement.activer()
+        self.save()
         return True
 
     def refuser(self, motif="", valide_par=None):
@@ -627,9 +641,3 @@ class PublicationMedia(models.Model):
             raise ValidationError({"fichier": f"Extension d'image non autorisée : .{extension}"})
         if self.type_media == self.TypeMedia.VIDEO and extension not in EXTENSIONS_VIDEO:
             raise ValidationError({"fichier": f"Extension de vidéo non autorisée : .{extension}"})
-
-
-
-
-
-
