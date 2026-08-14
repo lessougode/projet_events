@@ -1,7 +1,3 @@
-
-
-
-
 from asyncio.log import logger
 from functools import wraps
 
@@ -877,8 +873,18 @@ def supprimer_publication(request, pk):
 
 
 def liste_publications(request):
-    """Fil public des publications, tous organisateurs actifs confondus."""
-    publications = Publication.objects.filter(organisateur__is_active=True).select_related(
-        "organisateur", "evenement",
-    ).prefetch_related("medias")
+    """Fil des publications.
+
+    - Organisateur connecté : uniquement SES propres publications (comme
+      dans son espace privé), pour éviter qu'il voie/confonde celles des
+      autres organisateurs sur la page "Actualités".
+    - Visiteur non connecté (ou compte non-organisateur) : fil public,
+      tous organisateurs actifs confondus.
+    """
+    if request.user.is_authenticated and not request.user.is_staff:
+        publications = Publication.objects.filter(organisateur=request.user)
+    else:
+        publications = Publication.objects.filter(organisateur__is_active=True)
+
+    publications = publications.select_related("organisateur", "evenement").prefetch_related("medias")
     return render(request, "events/publications_liste.html", {"publications": publications})
