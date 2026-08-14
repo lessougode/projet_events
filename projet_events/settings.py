@@ -214,6 +214,17 @@ DEFAULT_FROM_EMAIL  = config("EMAIL_HOST_USER")
 
 
 # ---------------------------------------------------------------------------
+# CinetPay (paiement en ligne — abonnements organisateurs + inscriptions
+# payantes). Laisser vide si vous n'utilisez pas encore CinetPay : le moyen
+# de paiement CinetPay peut être désactivé depuis /admin/ (MoyenPaiement)
+# sans que l'application ne plante.
+# ---------------------------------------------------------------------------
+CINETPAY_API_KEY = config("CINETPAY_API_KEY", default="")
+CINETPAY_SITE_ID = config("CINETPAY_SITE_ID", default="")
+CINETPAY_SECRET_KEY = config("CINETPAY_SECRET_KEY", default="")
+
+
+# ---------------------------------------------------------------------------
 # Authentification organisateur
 # ---------------------------------------------------------------------------
 LOGIN_URL           = "connexion"

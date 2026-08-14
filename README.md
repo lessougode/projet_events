@@ -132,6 +132,52 @@ la console où tourne `runserver` (voir `EMAIL_BACKEND` dans `settings.py`).
 Le lien de confirmation s'y trouve donc directement, pratique pour tester
 le parcours complet sans configurer de vrai service SMTP.
 
+## Paiements (abonnement organisateur + inscriptions payantes)
+
+Deux circuits de paiement, activables/désactivables indépendamment depuis
+`/admin/` > **Moyens de paiement** :
+
+- **Mobile Money direct** (Orange Money, MTN MoMo, Moov Money) : aucune API
+  tierce, aucun agrégateur, aucun Twilio. Le payeur envoie l'argent
+  directement au numéro affiché, puis dépose une **capture d'écran** de la
+  transaction. Le bénéficiaire (l'organisateur pour une inscription,
+  l'administrateur pour un abonnement) valide manuellement la preuve depuis
+  son espace (ou `/admin/` > Paiements). Un email de confirmation part
+  automatiquement dès la validation.
+- **CinetPay** : paiement 100 % en ligne. Nécessite `CINETPAY_API_KEY`,
+  `CINETPAY_SITE_ID` (et `CINETPAY_SECRET_KEY`) dans le `.env`. Le statut est
+  systématiquement re-vérifié côté serveur auprès de CinetPay avant toute
+  validation (jamais confiance à la seule URL de retour).
+
+**Deux niveaux d'activation** :
+1. L'administrateur active/désactive un moyen pour **tout le site**
+   (`/admin/` > Moyens de paiement).
+2. Chaque organisateur active/désactive, **selon ce qu'il possède
+   réellement**, ses propres numéros pour encaisser les inscriptions de ses
+   événements (`Mon espace` > **Moyens de paiement**). L'administrateur fait
+   de même pour les numéros qui reçoivent les abonnements
+   (`CompteReception` avec `proprietaire` vide, dans `/admin/`).
+
+**Abonnement organisateur (= commerçant)** : un organisateur doit régler un
+abonnement (montant/durée configurables dans `/admin/` > Configuration de la
+plateforme) pour que son compte soit actif. Comme un compte inactif ne peut
+pas se connecter (comportement Django), le paiement se fait sans mot de
+passe, via un identifiant de session créé à l'inscription (ou retrouvé via
+`Compte pas encore activé ?` sur la page de connexion).
+
+**Événement payant** : cocher « Événement/formation payant(e) » et indiquer
+un prix lors de la création. Le paiement reste **facultatif**, événement par
+événement. Un participant doit régler avant que son inscription passe à
+`CONFIRMEE` (voir `Inscription.Statut.EMAIL_CONFIRME`).
+
+## Publications (texte + photos + vidéos)
+
+Chaque organisateur peut publier du contenu libre (texte, plusieurs photos
+et/ou vidéos mélangées) depuis `Mon espace` > **Publications**, avec un lien
+optionnel vers un de ses événements. Visible publiquement sur `/publications/`
+et sur la page de l'événement lié — masqué automatiquement si l'organisateur
+est désactivé, comme pour les événements.
+
 Pour un envoi réel en production, voir `GUIDE_PRODUCTION.md`.
 
 ## Structure du projet

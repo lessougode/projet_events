@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Actualités{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Actualités</h1>
+
+{% if publications %}
+    {% for publication in publications %}
+        <div class="card mb-3 p-3">
+            <p class="text-muted small mb-1">
+                {{ publication.organisateur.username }} — {{ publication.date_creation|date:"d/m/Y H:i" }}
+                {% if publication.evenement %}
+                    — <a href="{% url 'detail_evenement' publication.evenement.pk %}">{{ publication.evenement.titre }}</a>
+                {% endif %}
+            </p>
+            {% if publication.texte %}<p class="mb-2">{{ publication.texte|linebreaks }}</p>{% endif %}
+            {% if publication.medias.all %}
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                    {% for media in publication.medias.all %}
+                        {% if media.type_media == "PHOTO" %}
+                            <img src="{{ media.fichier.url }}" alt="" style="max-height:220px; border-radius:6px;">
+                        {% else %}
+                            <video src="{{ media.fichier.url }}" controls style="max-height:220px; border-radius:6px;"></video>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p class="text-muted">Aucune publication pour le moment.</p>
+{% endif %}
+{% endblock %}

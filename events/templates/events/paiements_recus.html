@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Paiements reçus{% endblock %}
+
+{% block content %}
+<a href="{% url 'dashboard_organisateur' %}" class="text-decoration-none">&larr; Retour à mon espace</a>
+
+<h2 class="mt-3 mb-4">Paiements reçus</h2>
+
+<h5>En attente de validation ({{ paiements_en_attente|length }})</h5>
+{% if paiements_en_attente %}
+    <div class="table-responsive mb-5">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Participant</th>
+                    <th>Événement</th>
+                    <th>Moyen</th>
+                    <th>Montant</th>
+                    <th>Émetteur</th>
+                    <th>Preuve</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paiement in paiements_en_attente %}
+                <tr>
+                    <td>{{ paiement.inscription.nom_complet }}<br><span class="text-muted small">{{ paiement.inscription.email }}</span></td>
+                    <td>{{ paiement.inscription.evenement.titre }}</td>
+                    <td>{{ paiement.moyen_paiement.get_code_display }}</td>
+                    <td>{{ paiement.montant|floatformat:"0" }} FCFA</td>
+                    <td>{{ paiement.numero_expediteur }}{% if paiement.reference_saisie %}<br><span class="text-muted small">Réf : {{ paiement.reference_saisie }}</span>{% endif %}</td>
+                    <td>
+                        {% if paiement.preuve_paiement %}
+                            <a href="{{ paiement.preuve_paiement.url }}" target="_blank">
+                                <img src="{{ paiement.preuve_paiement.url }}" alt="Preuve" style="max-height:60px; border-radius:4px;">
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column gap-1">
+                            <form method="post" action="{% url 'valider_paiement_recu' paiement.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-success w-100">Valider</button>
+                            </form>
+                            <form method="post" action="{% url 'refuser_paiement_recu' paiement.pk %}" onsubmit="return confirmerRefus(this);">
+                                {% csrf_token %}
+                                <input type="hidden" name="motif" class="motif-refus">
+                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">Refuser</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p class="text-muted mb-5">Aucun paiement en attente de validation.</p>
+{% endif %}
+
+<h5>Historique récent</h5>
+{% if historique %}
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr><th>Participant</th><th>Événement</th><th>Moyen</th><th>Montant</th><th>Statut</th></tr>
+            </thead>
+            <tbody>
+                {% for paiement in historique %}
+                <tr>
+                    <td>{{ paiement.inscription.nom_complet }}</td>
+                    <td>{{ paiement.inscription.evenement.titre }}</td>
+                    <td>{{ paiement.moyen_paiement.get_code_display }}</td>
+                    <td>{{ paiement.montant|floatformat:"0" }} FCFA</td>
+                    <td>
+                        {% if paiement.statut == "VALIDE" %}
+                            <span class="badge bg-success">Validé</span>
+                        {% elif paiement.statut == "REFUSE" %}
+                            <span class="badge bg-danger">Refusé</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ paiement.get_statut_display }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p class="text-muted">Aucun historique pour le moment.</p>
+{% endif %}
+
+<script>
+function confirmerRefus(form) {
+    const motif = prompt("Motif du refus (envoyé au participant par email) :");
+    if (motif === null) return false;
+    form.querySelector('.motif-refus').value = motif;
+    return true;
+}
+</script>
+{% endblock %}

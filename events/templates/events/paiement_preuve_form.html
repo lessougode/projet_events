@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Preuve de paiement{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card mt-3 p-4">
+            <h2 class="mb-1">Envoyer ma preuve de paiement</h2>
+            <p class="text-muted mb-4">
+                {{ compte.moyen_paiement.get_code_display }}
+                {% if compte.numero_reception %}
+                    — envoyez <strong>{{ evenement.prix|default:"le montant indiqué" }}{% if evenement %} FCFA{% endif %}</strong>
+                    au numéro <strong>{{ compte.numero_reception }}</strong>{% if compte.nom_beneficiaire %} ({{ compte.nom_beneficiaire }}){% endif %},
+                    puis déposez ci-dessous une capture d'écran de la transaction.
+                {% endif %}
+            </p>
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors|striptags }}</div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-primary w-100 mt-2">
+                    Envoyer ma preuve de paiement
+                </button>
+            </form>
+
+            <p class="text-muted small mt-3 mb-0">
+                Un email vous confirmera dès que votre paiement aura été vérifié
+                {% if abonnement %}par l'administrateur{% else %}par l'organisateur{% endif %}.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

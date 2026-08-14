@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Mes publications{% endblock %}
+
+{% block content %}
+<a href="{% url 'dashboard_organisateur' %}" class="text-decoration-none">&larr; Retour à mon espace</a>
+
+<div class="d-flex justify-content-between align-items-center my-4">
+    <h2 class="mb-0">Mes publications</h2>
+    <a href="{% url 'creer_publication' %}" class="btn btn-primary">+ Nouvelle publication</a>
+</div>
+
+{% if publications %}
+    {% for publication in publications %}
+        <div class="card mb-3 p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-muted small mb-1">
+                        {{ publication.date_creation|date:"d/m/Y H:i" }}
+                        {% if publication.evenement %} — lié à <strong>{{ publication.evenement.titre }}</strong>{% endif %}
+                    </p>
+                    {% if publication.texte %}<p class="mb-2">{{ publication.texte|linebreaks }}</p>{% endif %}
+                </div>
+                <form method="post" action="{% url 'supprimer_publication' publication.pk %}" onsubmit="return confirm('Supprimer cette publication ?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                </form>
+            </div>
+            {% if publication.medias.all %}
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                    {% for media in publication.medias.all %}
+                        {% if media.type_media == "PHOTO" %}
+                            <img src="{{ media.fichier.url }}" alt="" style="max-height:150px; border-radius:6px;">
+                        {% else %}
+                            <video src="{{ media.fichier.url }}" controls style="max-height:150px; border-radius:6px;"></video>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="card p-5 text-center">
+        <p class="text-muted mb-3">Vous n'avez encore publié aucun contenu.</p>
+        <a href="{% url 'creer_publication' %}" class="btn btn-primary">Créer ma première publication</a>
+    </div>
+{% endif %}
+{% endblock %}

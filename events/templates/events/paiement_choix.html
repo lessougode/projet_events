@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Paiement — {{ evenement.titre }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card mt-3 p-4">
+            <h2 class="mb-1">Un dernier pas : le paiement</h2>
+            <p class="text-muted mb-4">
+                {{ evenement.titre }} — <strong>{{ evenement.prix|floatformat:"0" }} FCFA</strong> par participant
+            </p>
+
+            {% if not comptes %}
+                <div class="alert alert-warning">
+                    Aucun moyen de paiement n'est actuellement disponible pour cet événement.
+                    Merci de contacter directement l'organisateur.
+                </div>
+            {% else %}
+                <p>Choisissez comment vous souhaitez régler votre participation :</p>
+                <div class="list-group">
+                    {% for compte in comptes %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <strong>{{ compte.moyen_paiement.get_code_display }}</strong>
+                                {% if compte.numero_reception %}
+                                    <br><span class="text-muted small">Numéro : {{ compte.numero_reception }}{% if compte.nom_beneficiaire %} ({{ compte.nom_beneficiaire }}){% endif %}</span>
+                                {% endif %}
+                            </div>
+                            {% if compte.moyen_paiement.est_cinetpay %}
+                                <a href="{% url 'payer_cinetpay_inscription' inscription.token_confirmation compte.pk %}" class="btn btn-primary btn-sm">
+                                    Payer en ligne avec CinetPay
+                                </a>
+                            {% else %}
+                                <a href="{% url 'soumettre_preuve_inscription' inscription.token_confirmation compte.pk %}" class="btn btn-outline-primary btn-sm">
+                                    J'ai payé, envoyer ma preuve
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -12,7 +12,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#2E5C8A;">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{% url 'liste_evenements' %}">Mes Événements</a>
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 align-items-center">
+                <a href="{% url 'liste_publications' %}" class="btn btn-outline-light btn-sm">Actualités</a>
                 {% if user.is_authenticated %}
                     <a href="{% url 'dashboard_organisateur' %}" class="btn btn-outline-light btn-sm">Mon espace</a>
                     <form method="post" action="{% url 'deconnexion' %}" class="d-inline">
@@ -39,8 +40,8 @@
 
     <footer class="text-center text-muted py-4">
         <small>&copy; 2026 Mes Événements</small>
-        <p class="mb-0">EMAIL:lessougode1987@gmail.com</p>
-        <p class="mb-0">TELEPHONE: +225 07 49 26 50 30</p>
+        <p class="mb-0">{{ organisateur.titre }}</p>
+        <p class="mb-0">{{ organisateur.email }}</p>
     </footer>
 </body>
 </html>

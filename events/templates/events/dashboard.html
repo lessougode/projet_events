@@ -2,6 +2,13 @@
 {% block title %}Mon espace organisateur{% endblock %}
 
 {% block content %}
+<div class="d-flex gap-2 flex-wrap mb-4">
+    <a href="{% url 'organisateur_abonnement' %}" class="btn btn-sm btn-outline-secondary">Mon abonnement</a>
+    <a href="{% url 'organisateur_moyens_paiement' %}" class="btn btn-sm btn-outline-secondary">Moyens de paiement</a>
+    <a href="{% url 'organisateur_paiements_recus' %}" class="btn btn-sm btn-outline-secondary">Paiements reçus</a>
+    <a href="{% url 'organisateur_publications' %}" class="btn btn-sm btn-outline-secondary">Publications</a>
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Mes événements</h1>
     <a href="{% url 'creer_evenement' %}" class="btn btn-primary">+ Créer un événement</a>

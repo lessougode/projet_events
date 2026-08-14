@@ -17,6 +17,32 @@
     </p>
     <p class="text-muted mb-3">📍 {{ evenement.lieu }}</p>
 
+    {% if evenement.est_payant %}
+        <p class="mb-3"><span class="badge bg-warning text-dark">💰 Payant — {{ evenement.prix|floatformat:"0" }} FCFA / participant</span></p>
+    {% else %}
+        <p class="mb-3"><span class="badge bg-info text-dark">Gratuit</span></p>
+    {% endif %}
+
+    {% if evenement.publications.all %}
+        <div class="mb-4">
+            <h5>Publications liées</h5>
+            {% for publication in evenement.publications.all %}
+                <div class="border rounded p-3 mb-2">
+                    {% if publication.texte %}<p class="mb-2">{{ publication.texte|linebreaks }}</p>{% endif %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for media in publication.medias.all %}
+                            {% if media.type_media == "PHOTO" %}
+                                <img src="{{ media.fichier.url }}" alt="" style="max-height:150px; border-radius:6px;">
+                            {% else %}
+                                <video src="{{ media.fichier.url }}" controls style="max-height:150px; border-radius:6px;"></video>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     {% if evenement.description %}
         <p>{{ evenement.description|linebreaks }}</p>
     {% endif %}

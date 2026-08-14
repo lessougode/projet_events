@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Paiement non abouti{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card p-5">
+            <div class="mb-3" style="font-size: 3rem;">❌</div>
+            <h2>Le paiement n'a pas abouti</h2>
+            <p class="text-muted mb-1">
+                Statut CinetPay : <code>{{ statut_cinetpay }}</code>
+            </p>
+            <p class="text-muted mb-4">
+                Aucune somme n'a été débitée avec succès pour <strong>{{ evenement.titre }}</strong>.
+                Vous pouvez réessayer ou choisir un autre moyen de paiement.
+            </p>
+            <a href="{% url 'choisir_paiement_inscription' inscription.token_confirmation %}" class="btn btn-primary">
+                Réessayer
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
